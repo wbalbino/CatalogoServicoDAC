@@ -1,0 +1,5 @@
+streamlit
+beautifulsoup4
+requests
+python-dotenv
+git+https://github.com/openai/swarm.git
