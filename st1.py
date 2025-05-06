@@ -1,7 +1,7 @@
 import streamlit as st
+from bs4 import BeautifulSoup
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
 import re  # Importação do módulo re
 
 tag = st.selectbox("Selecione o serviço", ["estudantes", "servidores-docentes", "externo"])
