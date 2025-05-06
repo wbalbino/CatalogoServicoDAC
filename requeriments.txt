@@ -1,3 +1,4 @@
-﻿streamlit
-beautifulsoup4
+streamlit
+pandas
 requests
+beautifulsoup4==4.12.2
