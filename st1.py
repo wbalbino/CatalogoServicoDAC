@@ -1,7 +1,7 @@
 import streamlit as st
-from bs4 import BeautifulSoup
 import pandas as pd
 import requests
+from bs4 import BeautifulSoup
 import re  # Importação do módulo re
 
 tag = st.selectbox("Selecione o serviço", ["estudantes", "servidores-docentes", "externo"])
@@ -34,11 +34,9 @@ if generate:
                 # Encontrar o elemento <p> com a classe "datapublicacao"
                 data_info_element = soup_servico.find("p", class_="datepublicacao")
                 
-                #if data_info_element:
-                #    st.write(data_info_element)
-                #else:
-                #    data_info_element = soup_servico.find("p", class_="datapublicacao")
-                #    st.write(data_info_element)
+                if not data_info_element: 
+                    data_info_element = soup_servico.find("p", class_="datapublicacao")
+                    
 
                 data_publicacao = "Não encontrada"
                 data_atualizacao = "Não encontrada"
