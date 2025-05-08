@@ -3,10 +3,22 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 import re  # Importação do módulo re
+from datetime import datetime, timedelta
 
 tag = st.selectbox("Selecione o serviço", ["estudantes", "servidores-docentes", "externo"])
 generate = st.button("Pesquisar ...")
 url = f"https://www.dac.unicamp.br/portal/servicos/catalogo/{tag}"
+
+def verificar_data_recente(data_str):
+    if data_str == "Não encontrada":
+        return False
+    try:
+        data = datetime.strptime(data_str, "%d/%m/%Y")
+        data_atual = datetime.now()
+        diferenca = data_atual - data
+        return diferenca.days > 90
+    except:
+        return False
 
 if generate:
     st.write(f"Pesquisando serviços de {url}")
@@ -37,7 +49,6 @@ if generate:
                 if not data_info_element: 
                     data_info_element = soup_servico.find("p", class_="datapublicacao")
                     
-
                 data_publicacao = "Não encontrada"
                 data_atualizacao = "Não encontrada"
 
@@ -54,14 +65,29 @@ if generate:
                     if atualizacao_match:
                         data_atualizacao = atualizacao_match.group(1)
 
+                # Verificar se as datas são recentes
+                #publicacao_recente = verificar_data_recente(data_publicacao)
+                atualizacao_recente = verificar_data_recente(data_atualizacao)
+
+                # Formatar a mensagem com cores
+                mensagem = f"{nome_servico}, "
+                
+                
+                if atualizacao_recente:
+                    mensagem += f"atualizado em: <span style='color: red;'>{data_atualizacao}</span>"
+                else:
+                    mensagem += f"atualizado em: {data_atualizacao}"
+
+                st.markdown(mensagem, unsafe_allow_html=True)
+
                 # Adicionar os dados à lista
-                #st.write(f"Adicionando... nome: {nome_servico}, URL: {url_servico}, publicado em: {data_publicacao}, atualizado em: {data_atualizacao}")
-                st.write(f"{nome_servico}, publicado em: {data_publicacao}, atualizado em: {data_atualizacao}")
                 data.append({
                     "Serviço": nome_servico,
                     "URL": url_servico,
                     "Data de Publicação": data_publicacao,
-                    "Data de Atualização": data_atualizacao
+                    "Data de Atualização": data_atualizacao,
+                    #"Publicação Recente": publicacao_recente,
+                    "Atualização Recente": atualizacao_recente
                 })
 
             except requests.exceptions.RequestException as e:
